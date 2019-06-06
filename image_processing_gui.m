@@ -22,7 +22,7 @@ function varargout = image_processing_gui(varargin)
 
 % Edit the above text to modify the response to help image_processing_gui
 
-% Last Modified by GUIDE v2.5 06-Jun-2019 23:39:01
+% Last Modified by GUIDE v2.5 07-Jun-2019 00:27:27
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -81,6 +81,9 @@ fileVec = fopen('vector1.txt','w');
 fprintf(fileVec,'%s','');
 fclose(fileVec);
 image = uigetfile({'*.tif; *.jpg; *.jpeg','Image (*.tif, *.jpg, *.jpeg)'},'Select an image');
+fileImage = fopen('image1.txt','w');
+fprintf(fileImage,'%s',image);
+fclose(fileImage);
 axes(handles.axes1);
 imageHandle1 = imshow(image);
 impixelinfo;
@@ -97,6 +100,9 @@ fileVec = fopen('vector2.txt','w');
 fprintf(fileVec,'%s','');
 fclose(fileVec);
 image = uigetfile({'*.tif; *.jpg; *.jpeg','Image (*.tif, *.jpg, *.jpeg)'},'Select an image');
+fileImage = fopen('image2.txt','w');
+fprintf(fileImage,'%s',image);
+fclose(fileImage);
 axes(handles.axes3);
 imageHandle2 = imshow(image);
 impixelinfo;
@@ -181,8 +187,95 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on mouse press over axes background.
-function axes1_ButtonDownFcn(hObject, eventdata, handles)
-% hObject    handle to axes1 (see GCBO)
+% --- Executes on button press in pushbutton3.
+function pushbutton3_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+    vecFile1 = fopen('vector1.txt','r');
+    vec1 = fscanf(vecFile1, '%i %i %i %i');
+    vec1 = reshape(vec1,4,length(vec1)/4).';
+    fclose(vecFile1);
+    vecFile2 = fopen('vector2.txt','r');
+    vec2 = fscanf(vecFile2, '%i %i %i %i');
+    vec2 = reshape(vec2,4,length(vec2)/4).';
+    fclose(vecFile2);
+    nbVec1 = size(vec1,1);
+    nbVec2 = size(vec2,1);
+    if nbVec1 ~= nbVec2 
+        fprintf('The number of feature vectors are not the same in source \n');
+        fprintf('and the destination image...\n');
+    else
+        % Read the file image to know what is the images studied
+        fileImage1 = fopen('image1.txt','r');
+        image1 = fscanf(fileImage1,'%s');
+        fclose(fileImage1);
+        fileImage2 = fopen('image2.txt','r');
+        image2 = fscanf(fileImage2,'%s');
+        fclose(fileImage2);
+        
+        % Logan code
+        img1=imread(image1);
+        img2=imread(image2); 
+        [newRowSize, newColSize]=size(img1);
+        newColSize = newColSize/3;
+        newSize=[ newRowSize ; newColSize ];
+               
+        l2=[160 170 160 640; 160 170 720 170];
+        l1=[160 170 160 640; 160 170 720 100];
+                
+        P1 = [l2(1,1); l2(1,2)];
+        Q1 = [l2(1,3); l2(1,4)];
+
+        P2 = [l2(2,1); l2(2,2)];
+        Q2 = [l2(2,3); l2(2,4)];
+
+        Pd1 = [l1(1,1); l1(1,2)];
+        Qd1 = [l1(1,3); l1(1,4)];
+
+        Pd2 = [l1(2,1); l1(2,2)];
+        Qd2 = [l1(2,3); l1(2,4)];
+
+        x1 = [P1(2);Q1(2)];
+        y1 = [P1(1);Q1(1)];
+
+        x2 = [P2(2);Q2(2)];
+        y2 = [P2(1);Q2(1)];
+
+        xd1 = [Pd1(2);Qd1(2)];
+        yd1 = [Pd1(1);Qd1(1)];
+
+        xd2 = [Pd2(2);Qd2(2)];
+        yd2 = [Pd2(1);Qd2(1)];
+
+        destIm = multiLineMorph(image1, l2, l1, 2, newSize);
+        axes(handles.axes2);
+        imageHandle1 = imshow(destIm);
+        impixelinfo;
+        hold on;
+        line(xd1, yd1,'Color','red');
+        hold on;
+        line(xd2,yd2,'Color','green');
+        hold on;
+% figure;
+% imshow(img1);
+% hold on;
+% line(x1, y1,'Color','red');
+% hold on;
+% line(x2,y2,'Color','green');
+% hold on;
+% 
+% figure;
+% imshow(destIm);
+% hold on;
+% line(xd1, yd1,'Color','red');
+% hold on;
+% line(xd2,yd2,'Color','green');
+% hold on;
+
+%         % This lines are used when the algorith is totally clear        
+%         P = zeros(2,nbVec1)
+%         Q = P;
+%         P = [vec1(:,1) vec1(:,3)].';
+%         Q = [vec1(:,2) vec1(:,4)].';
+    end
