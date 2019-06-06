@@ -22,7 +22,7 @@ function varargout = image_processing_gui(varargin)
 
 % Edit the above text to modify the response to help image_processing_gui
 
-% Last Modified by GUIDE v2.5 06-Jun-2019 22:29:55
+% Last Modified by GUIDE v2.5 06-Jun-2019 23:39:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -77,12 +77,15 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+fileVec = fopen('vector1.txt','w');
+fprintf(fileVec,'%s','');
+fclose(fileVec);
 image = uigetfile({'*.tif; *.jpg; *.jpeg','Image (*.tif, *.jpg, *.jpeg)'},'Select an image');
 axes(handles.axes1);
 imageHandle1 = imshow(image);
 impixelinfo;
 hold on;
-set(imageHandle1,'ButtonDownFcn',@ImageClickCallback);
+set(imageHandle1,'ButtonDownFcn',@ImageClickCallback1);
 
 
 % --- Executes on button press in pushbutton2.
@@ -90,13 +93,16 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+fileVec = fopen('vector2.txt','w');
+fprintf(fileVec,'%s','');
+fclose(fileVec);
 image = uigetfile({'*.tif; *.jpg; *.jpeg','Image (*.tif, *.jpg, *.jpeg)'},'Select an image');
 axes(handles.axes3);
 imageHandle2 = imshow(image);
 impixelinfo;
-set(imageHandle2,'ButtonDownFcn',@ImageClickCallback);
+set(imageHandle2,'ButtonDownFcn',@ImageClickCallback2);
 
-function ImageClickCallback ( hObject , eventData, handles )
+function ImageClickCallback1 ( hObject , eventData, handles)
    axesHandle  = get(hObject,'Parent');
    coordinates = get(axesHandle,'CurrentPoint'); 
    coordinates = round(coordinates(1,1:2));
@@ -104,9 +110,32 @@ function ImageClickCallback ( hObject , eventData, handles )
    set(h1,'String',num2str(coordinates(1)));
    h2 = findobj('Tag','edit2');
    set(h2,'String',num2str(coordinates(2)));
+   % Creation of a feature vector on the source image
    vec = imline;
+   pos = wait(vec);
+   % Write the data of the vectors inside a file
+   fileVec = fopen('vector1.txt','a');
+   fprintf(fileVec,'%i %i %i %i \n',round(pos));
+   fclose(fileVec);
    hold on;
 
+function ImageClickCallback2 ( hObject , eventData, handles)
+   axesHandle  = get(hObject,'Parent');
+   coordinates = get(axesHandle,'CurrentPoint'); 
+   coordinates = round(coordinates(1,1:2));
+   h1 = findobj('Tag','edit1');
+   set(h1,'String',num2str(coordinates(1)));
+   h2 = findobj('Tag','edit2');
+   set(h2,'String',num2str(coordinates(2)));
+   % Creation of a feature vector on the destination image
+   vec = imline;
+   pos = wait(vec);
+   % Write the data of the vectors inside a file
+   fileVec = fopen('vector2.txt','a');
+   fprintf(fileVec,'%i %i %i %i \n',round(pos));
+   fclose(fileVec);
+   hold on;
+   
 function edit1_Callback(hObject, eventdata, handles)
 % hObject    handle to edit1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
