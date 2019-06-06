@@ -105,6 +105,7 @@ function ImageClickCallback ( hObject , eventData, handles )
    h2 = findobj('Tag','edit2');
    set(h2,'String',num2str(coordinates(2)));
    vec = imline;
+   PQ = [PQ vec];
    hold on;
 
 function edit1_Callback(hObject, eventdata, handles)
