@@ -87,6 +87,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 image = uigetfile({'*.tif; *.jpg; *.jpeg','Image (*.tif, *.jpg, *.jpeg)'},'Select an image');
 axes(handles.axes1);
 imageHandle1 = imshow(image);
+impixelinfo;
 set(imageHandle1,'ButtonDownFcn',@ImageClickCallback);
 
 
@@ -98,30 +99,17 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 image = uigetfile({'*.tif; *.jpg; *.jpeg','Image (*.tif, *.jpg, *.jpeg)'},'Select an image');
 axes(handles.axes3);
 imageHandle2 = imshow(image);
+impixelinfo;
 set(imageHandle2,'ButtonDownFcn',@ImageClickCallback);
 
 function ImageClickCallback ( hObject , eventData, handles )
    axesHandle  = get(hObject,'Parent');
    coordinates = get(axesHandle,'CurrentPoint'); 
-   coordinates = coordinates(1,1:2);
-   
-   %guidata(edit1,coordinates);
-   
-   %fig = get(axesHandle,'Parent');
-   %get(fig);
-   %child = get(fig,'Children');
+   coordinates = round(coordinates(1,1:2));
    h1 = findobj('Tag','edit1');
    set(h1,'String',num2str(coordinates(1)));
    h2 = findobj('Tag','edit2');
    set(h2,'String',num2str(coordinates(2)));
-   %set(child(1));
-   
-   %han = guihandles(fig)
-   %edit1_Callback;
-   %s = set(handles.edit1,'string','hello');   
-   %// then here you can use coordinates as you want ...
-
-
 
 function edit1_Callback(hObject, eventdata, handles)
 % hObject    handle to edit1 (see GCBO)
