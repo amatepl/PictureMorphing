@@ -28,11 +28,11 @@ function [ destIm ] = multiLineMorph( image ,srcLines , destLines , nLines  , ne
     b = 2;
 
     for i = 1:nLines
-        Pi = [destLines(i,1); destLines(i,2)];
-        Qi = [destLines(i,3); destLines(i,4)];
+        Pi = [destLines(i,3); destLines(i,1)];
+        Qi = [destLines(i,4); destLines(i,2)];
 
-        Pdi = [srcLines(i,1); srcLines(i,2)];
-        Qdi = [srcLines(i,3); srcLines(i,4)];
+        Pdi = [srcLines(i,3); srcLines(i,1)];
+        Qdi = [srcLines(i,4); srcLines(i,2)];
 
         u = calc_U(X, Pi, Qi);
 
