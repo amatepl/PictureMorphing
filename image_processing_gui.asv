@@ -22,7 +22,7 @@ function varargout = image_processing_gui(varargin)
 
 % Edit the above text to modify the response to help image_processing_gui
 
-% Last Modified by GUIDE v2.5 07-Jun-2019 21:35:47
+% Last Modified by GUIDE v2.5 07-Jun-2019 21:50:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -63,9 +63,6 @@ fileImage = fopen('image2.txt','w');
 fprintf(fileImage,'%s','');
 fclose(fileImage);
 delete fig/*.jpg;
-handles.First = 0;
-handles.Second = 1;
-guidata(hObject, handles);
 % Choose default command line output for image_processing_gui
 handles.output = hObject;
 
@@ -184,18 +181,26 @@ function pushbutton3_Callback(hObject, eventdata, handles)
             image1Vec=vec1;
             image2Vec=vec2;
             nbVec = get(handles.nbVec,'String');
-            vectorSet = interpVec(image1Vec,image2Vec, str2num(nbVec));
-            destIm =img1;
+            num = 
+            vectorSet1 = interpVec(image1Vec,image2Vec, str2num(nbVec));
+            vectorSet2 = interpVec(image2Vec,image1Vec, str2num(nbVec));
+            destIm1(:,:,:,1) = img1;
+            destIm2(:,:,:, =img2;
             c = sprintf('fig/recup%i.jpg',1);
-            imwrite(destIm,c);
+            imwrite(destIm1,c);
             for i=2:str2num(nbVec)
-                l1(:,:) = vectorSet(i-1,:,:);
-                l2(:,:) = vectorSet(i,:,:);
+                c1(:,:) = vectorSet1(i-1,:,:);
+                c2(:,:) = vectorSet1(i,:,:);
+                d1(:,:) = vectorSet2(i-1,:,:);
+                d2(:,:) = vectorSet2(i,:,:);
                 if (nbVec1 == 1)
-                    destIm = multiLineMorph(destIm, l1, l2, nbVec1, newSize);
+                    destIm1 = multiLineMorph(destIm1, c1, c2, nbVec1, newSize);
+                    destIm2 = multiLineMorph(destIm2, d1, d2, nbVec1, newSize);
                 else 
-                    destIm = multiLineMorph(destIm, l1.', l2.', nbVec1, newSize);
+                    destIm1 = multiLineMorph(destIm1, c1.', c2.', nbVec1, newSize);
+                    destIm2 = multiLineMorph(destIm2, d1.',d2.', nbVec1, newSize);
                 end
+                destIm=crossDissolve(destIm1,destIm2,i-1,str2num(nbVec));
                 c = sprintf('fig/recup%i.jpg',i);
                 imwrite(destIm,c);
             end
@@ -234,33 +239,14 @@ end
 % --- Executes on button press in play.
 function play_Callback(hObject, eventdata, handles)
 nbVec = get(handles.nbVec,'String');
-i = 1;
 % hObject    handle to play (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-        for i =1
-          c = sprintf('fig/recup%i.jpg',i);
-          image = imread(c);
-          axes(handles.axes2);
-          imshow(image);
-          i = i + 1;
-          if i == str2num(nbVec)+2
-              i = 1;
-          end
-          pause(0.5);
-        end
-    else 
-        handles.First = 0;
-        handles.Second = 1;
-        guidata(hObject, handles);
-    end
-
-
-% --- Executes on button press in pause.
-function pause_Callback(hObject, eventdata, handles)
-% hObject    handle to pause (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles.First = 0;
-handles.Second = 1;
-guidata(hObject, handles);
+for i =1:str2num(nbVec)+1
+  c = sprintf('fig/recup%i.jpg',i);
+  image = imread(c);
+  axes(handles.axes2);
+  imshow(image);
+  i = i + 1;
+  pause(0.05);
+end

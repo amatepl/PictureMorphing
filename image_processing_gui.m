@@ -181,24 +181,33 @@ function pushbutton3_Callback(hObject, eventdata, handles)
             image1Vec=vec1;
             image2Vec=vec2;
             nbVec = get(handles.nbVec,'String');
-            vectorSet = interpVec(image1Vec,image2Vec, str2num(nbVec));
-            destIm =img1;
+            num = str2num(nbVec);
+            vectorSet1 = interpVec(image1Vec,image2Vec, num);
+            vectorSet2 = interpVec(image2Vec,image1Vec, num);
+            destIm1(:,:,:,1) = img1;
+            destIm2(:,:,:,num+1) = img2;
             c = sprintf('fig/recup%i.jpg',1);
-            imwrite(destIm,c);
-            for i=2:str2num(nbVec)
-                l1(:,:) = vectorSet(i-1,:,:);
-                l2(:,:) = vectorSet(i,:,:);
+            imwrite(destIm1,c);
+            for i=2:num
+                c1(:,:) = vectorSet1(i-1,:,:);
+                c2(:,:) = vectorSet1(i,:,:);
+                d1(:,:) = vectorSet2(i-1,:,:);
+                d2(:,:) = vectorSet2(i,:,:);
                 if (nbVec1 == 1)
-                    destIm = multiLineMorph(destIm, l1, l2, nbVec1, newSize);
+                    destIm1(:,:,:,i) = multiLineMorph(destIm1(:,:,:,i-1), c1, c2, nbVec1, newSize);
+                    destIm2(:,:,:,num-i+2) = multiLineMorph(destIm2(:,:,:,num-i+3), d1, d2, nbVec1, newSize);
                 else 
-                    destIm = multiLineMorph(destIm, l1.', l2.', nbVec1, newSize);
+                    destIm1(:,:,:,i) = multiLineMorph(destIm1(:,:,:,i-1), c1.', c2.', nbVec1, newSize);
+                    destIm2(:,:,:,num-i+2) = multiLineMorph(destIm2(:,:,:,num-i+3), d1.',d2.', nbVec1, newSize);
                 end
+            end
+            destIm1(:,:,:,num+1) = img2;
+            destIm2(:,:,:,1) = img1;
+            for i=1:num+1
+                destIm=crossDissolve(destIm1(:,:,:,i),destIm2(:,:,:,i),i,num+1);
                 c = sprintf('fig/recup%i.jpg',i);
                 imwrite(destIm,c);
             end
-            destIm = img2;
-            c = sprintf('fig/recup%i.jpg',i+1);
-            imwrite(destIm,c);
             c = 'Morphing finished';
             set(handles.issueText,'String',c);
         end
@@ -240,5 +249,5 @@ for i =1:str2num(nbVec)+1
   axes(handles.axes2);
   imshow(image);
   i = i + 1;
-  pause(0.5);
+  pause(0.05);
 end
