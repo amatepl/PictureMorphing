@@ -22,7 +22,7 @@ function varargout = image_processing_gui(varargin)
 
 % Edit the above text to modify the response to help image_processing_gui
 
-% Last Modified by GUIDE v2.5 07-Jun-2019 17:24:58
+% Last Modified by GUIDE v2.5 07-Jun-2019 21:50:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -50,7 +50,19 @@ function image_processing_gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to image_processing_gui (see VARARGIN)
-
+fileVec = fopen('vector1.txt','w');
+fprintf(fileVec,'%s','');
+fclose(fileVec);  
+fileVec = fopen('vector2.txt','w');
+fprintf(fileVec,'%s','');
+fclose(fileVec);
+fileImage = fopen('image1.txt','w');
+fprintf(fileImage,'%s','');
+fclose(fileImage);
+fileImage = fopen('image2.txt','w');
+fprintf(fileImage,'%s','');
+fclose(fileImage);
+delete fig/*.jpg;
 % Choose default command line output for image_processing_gui
 handles.output = hObject;
 
@@ -147,7 +159,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)
         c = 'The number of feature vectors are not the same in source and the destination image...';
         set(handles.issueText,'String',c);
     else
-        c = 'No issue';
+        c = 'Creation of morphing...';
         set(handles.issueText,'String',c);
         % Read the file image to know what is the images studied
         fileImage1 = fopen('image1.txt','r');
@@ -157,7 +169,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)
         image2 = fscanf(fileImage2,'%s');
         fclose(fileImage2);
         if (image1 == "" || image2 == "")
-            c = 'Missing image to make morrphing...';
+            c = 'Missing image to make morphing...';
             set(handles.issueText,'String',c);
         else
             img1=imread(image1);
@@ -171,8 +183,6 @@ function pushbutton3_Callback(hObject, eventdata, handles)
             nbVec = get(handles.nbVec,'String');
             vectorSet = interpVec(image1Vec,image2Vec, str2num(nbVec));
             destIm =img1;
-            c = 'Creation of morphing...';
-            set(handles.issueText,'String',c);
             c = sprintf('fig/recup%i.jpg',1);
             imwrite(destIm,c);
             for i=2:str2num(nbVec)
@@ -191,27 +201,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)
             imwrite(destIm,c);
             c = 'Morphing finished';
             set(handles.issueText,'String',c);
-%             axes(handles.axes2);
-%             imageHandle1 = imshow(destIm);
-%             impixelinfo;
         end
-        fileVec = fopen('vector1.txt','w');
-        fprintf(fileVec,'%s','');
-        fclose(fileVec);  
-        fileVec = fopen('vector2.txt','w');
-        fprintf(fileVec,'%s','');
-        fclose(fileVec);
-        fileImage = fopen('image1.txt','w');
-        fprintf(fileImage,'%s','');
-        fclose(fileImage);
-        fileImage = fopen('image2.txt','w');
-        fprintf(fileImage,'%s','');
-        fclose(fileImage);
-%         % This lines are used when the algorith is totally clear        
-%         P = zeros(2,nbVec1)
-%         Q = P;
-%         P = [vec1(:,1) vec1(:,3)].';
-%         Q = [vec1(:,2) vec1(:,4)].';
     end
 
 
@@ -235,4 +225,20 @@ function nbVec_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in play.
+function play_Callback(hObject, eventdata, handles)
+nbVec = get(handles.nbVec,'String');
+% hObject    handle to play (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+for i =1:str2num(nbVec)+1
+  c = sprintf('fig/recup%i.jpg',i);
+  image = imread(c);
+  axes(handles.axes2);
+  imshow(image);
+  i = i + 1;
+  pause(0.5);
 end
