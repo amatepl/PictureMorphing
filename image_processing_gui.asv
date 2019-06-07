@@ -206,8 +206,6 @@ function pushbutton3_Callback(hObject, eventdata, handles)
         c = 'The number of feature vectors are not the same in source and the destination image...';
         set(handles.issueText,'String',c);
     else
-        c = 'No issue';
-        set(handles.issueText,'String',c);
         % Read the file image to know what is the images studied
         fileImage1 = fopen('image1.txt','r');
         image1 = fscanf(fileImage1,'%s');
@@ -215,7 +213,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)
         fileImage2 = fopen('image2.txt','r');
         image2 = fscanf(fileImage2,'%s');
         fclose(fileImage2);
-        if (image1 == "" || image2 == "")
+        if (image1 == "" || image2 = "")
             c = 'Missing image to make morrphing...';
             set(handles.issueText,'String',c);
         else
@@ -263,18 +261,22 @@ function pushbutton3_Callback(hObject, eventdata, handles)
             line(xd2,yd2,'Color','green');
             hold on;
         end
-        fileVec = fopen('vector1.txt','w');
-        fprintf(fileVec,'%s','');
-        fclose(fileVec);  
-        fileVec = fopen('vector2.txt','w');
-        fprintf(fileVec,'%s','');
-        fclose(fileVec);
-        fileImage = fopen('image1.txt','w');
-        fprintf(fileImage,'%s','');
-        fclose(fileImage);
-        fileImage = fopen('image2.txt','w');
-        fprintf(fileImage,'%s','');
-        fclose(fileImage);
+% figure;
+% imshow(img1);
+% hold on;
+% line(x1, y1,'Color','red');
+% hold on;
+% line(x2,y2,'Color','green');
+% hold on;
+% 
+% figure;
+% imshow(destIm);
+% hold on;
+% line(xd1, yd1,'Color','red');
+% hold on;
+% line(xd2,yd2,'Color','green');
+% hold on;
+
 %         % This lines are used when the algorith is totally clear        
 %         P = zeros(2,nbVec1)
 %         Q = P;
