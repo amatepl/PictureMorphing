@@ -170,10 +170,8 @@ function pushbutton3_Callback(hObject, eventdata, handles)
             image2Vec=vec2;
             nbVec = get(handles.nbVec,'String');
             vectorSet = interpVec(image1Vec,image2Vec, str2num(nbVec));
-            destIm =img1;
-            c = 'Creation of morphing...';
-            set(handles.issueText,'String',c);
-            c = sprintf('fig/recup%i.jpg',1);
+            destIm =image1;
+            c = sprintf('fig/recup%i.jpg',i-1);
             imwrite(destIm,c);
             for i=2:str2num(nbVec)
                 l1(:,:) = vectorSet(i-1,:,:);
@@ -186,11 +184,9 @@ function pushbutton3_Callback(hObject, eventdata, handles)
                 c = sprintf('fig/recup%i.jpg',i);
                 imwrite(destIm,c);
             end
-            destIm = img2;
-            c = sprintf('fig/recup%i.jpg',i+1);
+            destIm = image2
+            c = sprintf('fig/recup%i.jpg',i-1);
             imwrite(destIm,c);
-            c = 'Morphing finished';
-            set(handles.issueText,'String',c);
 %             axes(handles.axes2);
 %             imageHandle1 = imshow(destIm);
 %             impixelinfo;

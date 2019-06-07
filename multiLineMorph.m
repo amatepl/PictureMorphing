@@ -5,9 +5,8 @@ function [ destIm ] = multiLineMorph( image ,srcLines , destLines , nLines  , ne
         % destLines - guidelines for the transformation
         % nLines    - number of lines used for the transformation
         % newSize   - size of the transformed image
-
-    srcIm = imread(image);
     
+    srcIm = image;
     rows = newSize(1);
     cols = newSize(2);
 
